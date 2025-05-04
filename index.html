@@ -1,0 +1,906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Udemy: Online Courses - Learn Anything, On Your Schedule</title>
+    <link rel="icon" href="https://www.udemy.com/staticx/udemy/images/v8/favicon-32x32.png" type="image/png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .fade-in { animation: fadeIn 0.8s ease-out; }
+        .slide-in-left { animation: slideInLeft 0.8s ease-out; }
+        .fade-in-up { animation: fadeInUp 0.6s ease-out; }
+        .pulse { animation: pulse 1.5s infinite; }
+        .spin { animation: spin 1s linear infinite; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideInLeft { from { transform: translateX(-100px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes fadeInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .course-card:hover, .category-item:hover, .recommended-course:hover, .path-step:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            transition: all 0.3s ease;
+        }
+        .carousel-track { transition: transform 0.5s ease; }
+        .progress-fill { transition: width 5s linear; }
+        .timeline::before { content: ''; position: absolute; top: 20px; left: 0; right: 0; height: 4px; background-color: #d1d7dc; z-index: 1; }
+        .timeline-point::before {
+            content: '';
+            position: absolute;
+            top: 16px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #a435f0;
+            transition: all 0.3s ease;
+        }
+        .timeline-point.active::before { width: 18px; height: 18px; top: 13px; }
+    </style>
+</head>
+<body class="bg-white text-gray-900 font-sans">
+    <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-md transition-shadow duration-300">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+            <a href="#" class="flex-shrink-0"><img src="https://www.udemy.com/staticx/udemy/images/v7/logo-udemy.svg" alt="Udemy" class="h-8"></a>
+            <button class="hidden md:block text-gray-700 font-semibold hover:text-purple-600 transition-colors mx-3">Categories</button>
+            <div class="flex-1 max-w-xl mx-4">
+                <div class="relative">
+                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-500"></i>
+                    <input id="searchInput" type="text" class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-purple-500 bg-gray-50" placeholder="Search for anything">
+                </div>
+            </div>
+            <div class="flex items-center space-x-2">
+                <a href="#" class="hidden md:block text-gray-700 font-semibold hover:text-purple-600 transition-colors px-3">Udemy Business</a>
+                <a href="#" class="hidden md:block text-gray-700 font-semibold hover:text-purple-600 transition-colors px-3">Teach on Udemy</a>
+                <a href="#" class="text-gray-700 hover:scale-110 transition-transform px-3"><i class="fas fa-shopping-cart"></i></a>
+                <button class="border border-gray-900 text-gray-900 font-semibold px-4 py-2 rounded hover:bg-gray-50 hover:-translate-y-1 transition-all">Log in</button>
+                <button class="border border-gray-900 bg-gray-900 text-white font-semibold px-4 py-2 rounded hover:bg-gray-800 hover:-translate-y-1 transition-all">Sign up</button>
+                <button class="border border-gray-900 w-10 h-10 flex items-center justify-center rounded hover:bg-gray-50 hover:rotate-360 transition-all"><i class="fas fa-globe"></i></button>
+            </div>
+        </div>
+    </header>
+
+    <section class="bg-gradient-to-br from-gray-50 to-gray-100 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 bg-white p-8 rounded-lg shadow-lg m-6 slide-in-left">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Learning that gets you</h1>
+                <p class="text-lg md:text-xl text-gray-600 mb-6">Skills for your present (and your future). Get started with us.</p>
+                <a href="#" class="inline-block bg-purple-600 text-white font-semibold px-6 py-3 rounded hover:bg-purple-700 hover:-translate-y-1 transition-all">Explore Courses</a>
+            </div>
+            <div class="md:w-1/2 h-80 md:h-96 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3')] bg-cover bg-center rounded-lg fade-in"></div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 fade-in">AI-Powered Learning Path Generator</h2>
+        <div class="bg-white p-8 rounded-lg shadow-lg">
+            <div id="formSection">
+                <form id="learningPathForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="col-span-1 md:col-span-2">
+                        <label for="learningGoals" class="block text-lg font-semibold mb-2">What do you want to learn?</label>
+                        <textarea id="learningGoals" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500" rows="4" placeholder="E.g., 'I want to become a MERN Stack developer'" required></textarea>
+                    </div>
+                    <div>
+                        <label for="currentSkillLevel" class="block text-lg font-semibold mb-2">Current Skill Level</label>
+                        <select id="currentSkillLevel" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500" required>
+                            <option value="beginner">Beginner</option>
+                            <option value="intermediate">Intermediate</option>
+                            <option value="advanced">Advanced</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="timeAvailability" class="block text-lg font-semibold mb-2">Weekly Time Dedication</label>
+                        <select id="timeAvailability" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500" required>
+                            <option value="minimal">2-3 hours</option>
+                            <option value="moderate">5-10 hours</option>
+                            <option value="substantial">10-20 hours</option>
+                            <option value="fulltime">20+ hours</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="learningStyle" class="block text-lg font-semibold mb-2">Preferred Learning Style</label>
+                        <select id="learningStyle" class="w-full p-3 border border-gray-300 rounded focus:ring-2 focus:ring-purple-500 focus:border-purple-500" required>
+                            <option value="visual">Visual</option>
+                            <option value="practical">Practical</option>
+                            <option value="theoretical">Theoretical</option>
+                            <option value="mixed">Mixed</option>
+                        </select>
+                    </div>
+                    <div class="col-span-1 md:col-span-2">
+                        <button type="submit" class="w-full bg-purple-600 text-white font-semibold py-4 rounded hover:bg-purple-700 hover:-translate-y-1 transition-all">Generate My Learning Path</button>
+                    </div>
+                </form>
+            </div>
+            <div id="loadingSection" class="hidden text-center py-12">
+                <div class="w-12 h-12 border-4 border-t-purple-600 border-gray-200 rounded-full mx-auto spin"></div>
+                <p class="mt-4 text-lg">Crafting your learning path...</p>
+                <div class="w-full h-2 bg-gray-200 rounded mt-4"><div class="h-full bg-purple-600 rounded progress-fill"></div></div>
+            </div>
+            <div id="resultsSection" class="hidden">
+                <h3 class="text-2xl font-bold text-purple-600 mb-6">Your Personalized Learning Path</h3>
+                <p id="pathDescription" class="text-lg mb-8"></p>
+                <div id="pathSteps" class="space-y-6"></div>
+                <div class="mt-12">
+                    <h3 class="text-xl font-bold mb-6">Estimated Timeline</h3>
+                    <div id="timeline" class="flex justify-between relative"></div>
+                </div>
+                <button id="backToForm" class="mt-8 w-full bg-purple-600 text-white font-semibold py-4 rounded hover:bg-purple-700 hover:-translate-y-1 transition-all">Generate Another Path</button>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 fade-in">A Broad Selection of Courses</h2>
+        <div class="flex justify-center mb-6 overflow-x-auto">
+            <div class="flex space-x-4 border-b-2 border-gray-200">
+                <button class="category-tab active px-4 py-2 font-semibold text-gray-600 hover:text-gray-900 relative" data-category="most-popular">Most Popular</button>
+                <button class="category-tab px-4 py-2 font-semibold text-gray-600 hover:text-gray-900 relative" data-category="new-trending">New & Trending</button>
+                <button class="category-tab px-4 py-2 font-semibold text-gray-600 hover:text-gray-900 relative" data-category="python">Python</button>
+                <button class="category-tab px-4 py-2 font-semibold text-gray-600 hover:text-gray-900 relative" data-category="web-dev">Web Development</button>
+                <button class="category-tab px-4 py-2 font-semibold text-gray-600 hover:text-gray-900 relative" data-category="data-science">Data Science</button>
+            </div>
+        </div>
+        <div class="relative">
+            <button class="carousel-button absolute left-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 hover:scale-110 transition-all hidden md:flex"><i class="fas fa-chevron-left"></i></button>
+            <div class="overflow-hidden">
+                <div class="carousel-track flex">
+                    <div class="course-card flex-none w-64 mr-4 border border-gray-200 rounded-lg bg-white fade-in-up" data-category="most-popular python">
+                        <img src="https://images.unsplash.com/photo-1515879218367-8466d910aaa4" class="w-full h-36 object-cover" alt="Python Course">
+                        <div class="p-4">
+                            <h3 class="font-bold text-base line-clamp-2">Python for Beginners: Learn Programming</h3>
+                            <p class="text-sm text-gray-600">John Smith</p>
+                            <div class="flex items-center my-2">
+                                <span class="font-bold text-sm">4.7</span>
+                                <div class="text-yellow-500 text-xs ml-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                                <span class="text-xs text-gray-600 ml-1">(98,754)</span>
+                            </div>
+                            <p class="font-bold text-base">$13.99</p>
+                        </div>
+                    </div>
+                    <div class="course-card flex-none w-64 mr-4 border border-gray-200 rounded-lg bg-white fade-in-up" data-category="most-popular web-dev">
+                        <img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97" class="w-full h-36 object-cover" alt="Web Dev Course">
+                        <div class="p-4">
+                            <h3 class="font-bold text-base line-clamp-2">The Complete Web Developer in 2025</h3>
+                            <p class="text-sm text-gray-600">Jane Doe</p>
+                            <div class="flex items-center my-2">
+                                <span class="font-bold text-sm">4.8</span>
+                                <div class="text-yellow-500 text-xs ml-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                                <span class="text-xs text-gray-600 ml-1">(85,632)</span>
+                            </div>
+                            <p class="font-bold text-base">$14.99</p>
+                        </div>
+                    </div>
+                    <div class="course-card flex-none w-64 mr-4 border border-gray-200 rounded-lg bg-white fade-in-up" data-category="most-popular data-science">
+                        <img src="https://images.unsplash.com/photo-1551288049-b5f4a42c429a" class="w-full h-36 object-cover" alt="Data Science Course">
+                        <div class="p-4">
+                            <h3 class="font-bold text-base line-clamp-2">Machine Learning A-Z: Hands-On Python</h3>
+                            <p class="text-sm text-gray-600">Robert Johnson</p>
+                            <div class="flex items-center my-2">
+                                <span class="font-bold text-sm">4.5</span>
+                                <div class="text-yellow-500 text-xs ml-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                                <span class="text-xs text-gray-600 ml-1">(72,193)</span>
+                            </div>
+                            <p class="font-bold text-base">$18.99</p>
+                        </div>
+                    </div>
+                    <div class="course-card flex-none w-64 mr-4 border border-gray-200 rounded-lg bg-white fade-in-up" data-category="most-popular web-dev">
+                        <img src="https://images.unsplash.com/photo-1627399270231-9f7525f5d663" class="w-full h-36 object-cover" alt="React Course">
+                        <div class="p-4">
+                            <h3 class="font-bold text-base line-clamp-2">React - The Complete Guide</h3>
+                            <p class="text-sm text-gray-600">Maximilian Schwarzmüller</p>
+                            <div class="flex items-center my-2">
+                                <span class="font-bold text-sm">4.7</span>
+                                <div class="text-yellow-500 text-xs ml-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i></div>
+                                <span class="text-xs text-gray-600 ml-1">(64,981)</span>
+                            </div>
+                            <p class="font-bold text-base">$15.99</p>
+                        </div>
+                    </div>
+                    <div class="course-card flex-none w-64 mr-4 border border-gray-200 rounded-lg bg-white fade-in-up" data-category="most-popular web-dev">
+                        <img src="https://images.unsplash.com/photo-1593720213427-2d0b8b8e8b1e" class="w-full h-36 object-cover" alt="JavaScript Course">
+                        <div class="p-4">
+                            <h3 class="font-bold text-base line-clamp-2">The Complete JavaScript Course 2025</h3>
+                            <p class="text-sm text-gray-600">Jonas Schmedtmann</p>
+                            <div class="flex items-center my-2">
+                                <span class="font-bold text-sm">4.8</span>
+                                <div class="text-yellow-500 text-xs ml-1"><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i></div>
+                                <span class="text-xs text-gray-600 ml-1">(139,428)</span>
+                            </div>
+                            <p class="font-bold text-base">$12.99</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-button absolute right-0 top-1/2 -translate-y-1/2 w-12 h-12 bg-white rounded-full shadow-lg flex items-center justify-center hover:bg-gray-50 hover:scale-110 transition-all hidden md:flex"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </section>
+
+    <section class="bg-gray-50 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <h2 class="text-3xl md:text-4xl font-bold text-center mb-8 fade-in">Top Categories</h2>
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+                <div class="category-item p-8 border border-gray-200 rounded-lg text-center bg-gradient-to-br from-white to-gray-50"><h3 class="font-bold text-lg">Web Development</h3></div>
+                <div class="category-item p-8 border border-gray-200 rounded-lg text-center bg-gradient-to-br from-white to-gray-50"><h3 class="font-bold text-lg">Mobile Development</h3></div>
+                <div class="category-item p-8 border border-gray-200 rounded-lg text-center bg-gradient-to-br from-white to-gray-50"><h3 class="font-bold text-lg">Game Development</h3></div>
+                <div class="category-item p-8 border border-gray-200 rounded-lg text-center bg-gradient-to-br from-white to-gray-50"><h3 class="font-bold text-lg">Entrepreneurship</h3></div>
+                <div class="category-item p-8 border border-gray-200 rounded-lg text-center bg-gradient-to-br from-white to-gray-50"><h3 class="font-bold text-lg">Data Science</h3></div>
+                <div class="category-item p-8 border border-gray-200 rounded-lg text-center bg-gradient-to-br from-white to-gray-50"><h3 class="font-bold text-lg">IT Certifications</h3></div>
+                <div class="category-item p-8 border border-gray-200 rounded-lg text-center bg-gradient-to-br from-white to-gray-50"><h3 class="font-bold text-lg">Personal Development</h3></div>
+                <div class="category-item p-8 border border-gray-200 rounded-lg text-center bg-gradient-to-br from-white to-gray-50"><h3 class="font-bold text-lg">Graphic Design</h3></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-8 fade-in">What Our Students Say</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="testimonial-card p-6 bg-white border border-gray-200 rounded-lg">
+                <p class="text-lg italic mb-4">"Udemy transformed my career! The MERN Stack course was a game-changer."</p>
+                <p class="font-bold text-purple-600">Emily R.</p>
+            </div>
+            <div class="testimonial-card p-6 bg-white border border-gray-200 rounded-lg">
+                <p class="text-lg italic mb-4">"The AI learning path helped me master web development in months!"</p>
+                <p class="font-bold text-purple-600">Michael T.</p>
+            </div>
+            <div class="testimonial-card p-6 bg-white border border-gray-200 rounded-lg">
+                <p class="text-lg italic mb-4">"Flexible learning at its best. Highly recommend Udemy!"</p>
+                <p class="font-bold text-purple-600">Sarah L.</p>
+            </div>
+        </div>
+    </section>
+
+    <section class="bg-gradient-to-br from-gray-50 to-gray-100 py-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center">
+            <div class="md:w-1/2 pr-0 md:pr-16">
+                <h2 class="text-4xl md:text-5xl font-bold mb-6 fade-in">Become an Instructor</h2>
+                <div class="space-y-4 mb-8">
+                    <div class="flex items-center fade-in-up"><i class="fas fa-check-circle text-purple-600 mr-4 text-2xl"></i><p>Teach what you love</p></div>
+                    <div class="flex items-center fade-in-up"><i class="fas fa-check-circle text-purple-600 mr-4 text-2xl"></i><p>Create courses your way</p></div>
+                    <div class="flex items-center fade-in-up"><i class="fas fa-check-circle text-purple-600 mr-4 text-2xl"></i><p>Earn from enrollments</p></div>
+                </div>
+                <button class="bg-purple-600 text-white font-semibold px-8 py-3 rounded hover:bg-purple-700 hover:-translate-y-1 transition-all">Start Teaching Today</button>
+            </div>
+            <div class="md:w-1/2 h-80 md:h-96 bg-[url('https://images.unsplash.com/photo-1542744173-05336fcc7ad4')] bg-cover bg-center rounded-lg fade-in mt-8 md:mt-0"></div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-8 fade-in">Trusted by Companies of All Sizes</h2>
+        <div class="flex justify-around flex-wrap gap-6">
+            <div class="h-12 w-36 bg-gray-100 rounded"></div>
+            <div class="h-12 w-36 bg-gray-100 rounded"></div>
+            <div class="h-12 w-36 bg-gray-100 rounded"></div>
+            <div class="h-12 w-36 bg-gray-100 rounded"></div>
+            <div class="h-12 w-36 bg-gray-100 rounded"></div>
+        </div>
+    </section>
+
+    <footer class="bg-gray-900 text-white py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Udemy Business</h3>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Teach on Udemy</a>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Get the App</a>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">About Us</a>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Contact Us</a>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Careers</h3>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Blog</a>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Help and Support</a>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Affiliate</a>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Investors</a>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Terms</h3>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Privacy Policy</a>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Cookie Settings</a>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Sitemap</a>
+                    <a href="#" class="block mb-2 hover:text-purple-400 hover:translate-x-1 transition-all">Accessibility Statement</a>
+                </div>
+                <div>
+                    <h3 class="font-bold text-lg mb-4">Follow Us</h3>
+                    <div class="flex space-x-4">
+                        <a href="https://facebook.com/udemy" target="_blank" class="text-2xl hover:text-purple-400 hover:scale-110 transition-all"><i class="fab fa-facebook"></i></a>
+                        <a href="https://twitter.com/udemy" target="_blank" class="text-2xl hover:text-purple-400 hover:scale-110 transition-all"><i class="fab fa-twitter"></i></a>
+                        <a href="https://instagram.com/udemy" target="_blank" class="text-2xl hover:text-purple-400 hover:scale-110 transition-all"><i class="fab fa-instagram"></i></a>
+                        <a href="https://linkedin.com/company/udemy" target="_blank" class="text-2xl hover:text-purple-400 hover:scale-110 transition-all"><i class="fab fa-linkedin"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row justify-between items-center pt-8 border-t border-gray-700">
+                <img src="https://www.udemy.com/staticx/udemy/images/v7/logo-udemy-inverted.svg" alt="Udemy" class="h-8 mb-4 md:mb-0">
+                <p class="text-sm">© 2025 Udemy, Inc.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Hardcoded Data for Learning Paths
+        const learningPaths = {
+            java: {
+                description: `Master Java programming from basics to advanced, tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences. Become proficient in building robust applications.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "Java Fundamentals",
+                        description: "Learn syntax, OOP concepts, and basic programming in Java.",
+                        courses: [
+                            { title: "Java Programming Masterclass", instructor: "Tim Buchalka", rating: 4.7, price: "$14.99" },
+                            { title: "Java for Absolute Beginners", instructor: "John Purcell", rating: 4.5, price: "$12.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "Intermediate Java",
+                        description: "Explore collections, multithreading, and file I/O.",
+                        courses: [
+                            { title: "Java Intermediate: Data Structures", instructor: "Bryan Hansen", rating: 4.6, price: "$15.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "Spring and Hibernate",
+                        description: "Build web applications using Spring Framework and Hibernate ORM.",
+                        courses: [
+                            { title: "Spring & Hibernate for Beginners", instructor: "Chad Darby", rating: 4.8, price: "$16.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 4",
+                        title: "Advanced Java Projects",
+                        description: "Apply skills in real-world projects like REST APIs.",
+                        courses: [
+                            { title: "Java REST API Development", instructor: "Jose Portilla", rating: 4.7, price: "$15.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1-2", active: true },
+                    { label: "Month 3-4", active: false },
+                    { label: "Month 5-6", active: false },
+                    { label: "Month 7-8", active: false }
+                ]
+            },
+            python: {
+                description: `Become a Python expert, tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences. Excel in automation, web development, and data analysis.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "Python Basics",
+                        description: "Master Python syntax, data structures, and basic scripting.",
+                        courses: [
+                            { title: "Complete Python Bootcamp", instructor: "Jose Portilla", rating: 4.8, price: "$13.99" },
+                            { title: "Python for Beginners", instructor: "Mosh Hamedani", rating: 4.7, price: "$12.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "Data Analysis with Python",
+                        description: "Learn Pandas, NumPy, and data visualization.",
+                        courses: [
+                            { title: "Data Analysis with Pandas", instructor: "Boris Paskhaver", rating: 4.6, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "Web Development with Django",
+                        description: "Build web applications using Django framework.",
+                        courses: [
+                            { title: "Django for Beginners", instructor: "William Vincent", rating: 4.7, price: "$15.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 4",
+                        title: "Machine Learning with Python",
+                        description: "Explore ML algorithms and libraries like Scikit-learn.",
+                        courses: [
+                            { title: "Machine Learning A-Z", instructor: "Kirill Eremenko", rating: 4.8, price: "$16.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1-2", active: true },
+                    { label: "Month 3-4", active: false },
+                    { label: "Month 5-6", active: false },
+                    { label: "Month 7-8", active: false }
+                ]
+            },
+            fullstack: {
+                description: `Become a Full Stack developer, tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences. Master both frontend and backend technologies.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "Frontend Foundations",
+                        description: "Learn HTML, CSS, and JavaScript for responsive UIs.",
+                        courses: [
+                            { title: "The Web Developer Bootcamp", instructor: "Colt Steele", rating: 4.8, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "Backend with Node.js",
+                        description: "Build APIs and servers using Node.js and Express.",
+                        courses: [
+                            { title: "Node.js Bootcamp", instructor: "Andrew Mead", rating: 4.7, price: "$15.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "Databases and Deployment",
+                        description: "Work with MongoDB and deploy apps on cloud platforms.",
+                        courses: [
+                            { title: "MongoDB - The Complete Guide", instructor: "Brad Traversy", rating: 4.6, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 4",
+                        title: "Full Stack Projects",
+                        description: "Build end-to-end applications integrating frontend and backend.",
+                        courses: [
+                            { title: "Full Stack Development Masterclass", instructor: "Angela Yu", rating: 4.8, price: "$16.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1-2", active: true },
+                    { label: "Month 3-4", active: false },
+                    { label: "Month 5-6", active: false },
+                    { label: "Month 7-8", active: false }
+                ]
+            },
+            mern: {
+                description: `Master the MERN Stack, tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences. Build modern full-stack applications.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "HTML, CSS, JavaScript",
+                        description: "Build a strong foundation in web development basics.",
+                        courses: [
+                            { title: "The Web Developer Bootcamp", instructor: "Colt Steele", rating: 4.8, price: "$14.99" },
+                            { title: "JavaScript - The Complete Guide", instructor: "Jonas Schmedtmann", rating: 4.7, price: "$12.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "React for Frontend",
+                        description: "Create dynamic UIs with React and Redux.",
+                        courses: [
+                            { title: "React - The Complete Guide", instructor: "Maximilian Schwarzmüller", rating: 4.7, price: "$15.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "Node.js and Express",
+                        description: "Develop backend APIs with Node.js and Express.",
+                        courses: [
+                            { title: "Node.js, Express & MongoDB Bootcamp", instructor: "Andrew Mead", rating: 4.8, price: "$16.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 4",
+                        title: "MongoDB Integration",
+                        description: "Manage data with MongoDB for full-stack apps.",
+                        courses: [
+                            { title: "MongoDB - The Complete Guide", instructor: "Brad Traversy", rating: 4.6, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 5",
+                        title: "MERN Stack Project",
+                        description: "Build a complete MERN application from scratch.",
+                        courses: [
+                            { title: "MERN Stack: Build Full-Stack Apps", instructor: "Andrew Mead", rating: 4.6, price: "$16.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1-2", active: true },
+                    { label: "Month 3-4", active: false },
+                    { label: "Month 5-6", active: false },
+                    { label: "Month 7-8", active: false },
+                    { label: "Month 9-10", active: false }
+                ]
+            },
+            videoediting: {
+                description: `Become a skilled video editor, tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences. Create professional videos for various platforms.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "Video Editing Basics",
+                        description: "Learn editing fundamentals with tools like Premiere Pro.",
+                        courses: [
+                            { title: "Adobe Premiere Pro CC Masterclass", instructor: "Phil Ebiner", rating: 4.7, price: "$13.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "Advanced Editing Techniques",
+                        description: "Master transitions, color grading, and audio editing.",
+                        courses: [
+                            { title: "Advanced Video Editing with Premiere", instructor: "Jordy Vandeput", rating: 4.6, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "Motion Graphics with After Effects",
+                        description: "Create dynamic graphics and animations.",
+                        courses: [
+                            { title: "After Effects CC: Complete Course", instructor: "Daniel Walter Scott", rating: 4.8, price: "$15.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 4",
+                        title: "Portfolio Projects",
+                        description: "Build a professional portfolio with real-world projects.",
+                        courses: [
+                            { title: "Video Editing Portfolio Masterclass", instructor: "Phil Ebiner", rating: 4.7, price: "$14.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1-2", active: true },
+                    { label: "Month 3-4", active: false },
+                    { label: "Month 5-6", active: false },
+                    { label: "Month 7-8", active: false }
+                ]
+            },
+            datascience: {
+                description: `Excel in Data Science, tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences. Analyze data and build predictive models.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "Python for Data Science",
+                        description: "Learn Python, Pandas, and NumPy for data manipulation.",
+                        courses: [
+                            { title: "Data Science with Python", instructor: "Jose Portilla", rating: 4.8, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "Statistics and Probability",
+                        description: "Understand statistical methods for data analysis.",
+                        courses: [
+                            { title: "Statistics for Data Science", instructor: "Juan Galvan", rating: 4.6, price: "$13.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "Machine Learning",
+                        description: "Build ML models with Scikit-learn and TensorFlow.",
+                        courses: [
+                            { title: "Machine Learning A-Z", instructor: "Kirill Eremenko", rating: 4.8, price: "$16.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 4",
+                        title: "Data Visualization",
+                        description: "Create insightful visualizations with Matplotlib and Seaborn.",
+                        courses: [
+                            { title: "Data Visualization with Python", instructor: "Boris Paskhaver", rating: 4.7, price: "$14.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1-2", active: true },
+                    { label: "Month 3-4", active: false },
+                    { label: "Month 5-6", active: false },
+                    { label: "Month 7-8", active: false }
+                ]
+            },
+            uiux: {
+                description: `Become a UI/UX designer, tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences. Design user-friendly interfaces.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "UI/UX Fundamentals",
+                        description: "Learn design principles, wireframing, and prototyping.",
+                        courses: [
+                            { title: "UI/UX Design Bootcamp", instructor: "Daniel Walter Scott", rating: 4.7, price: "$13.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "Figma for Prototyping",
+                        description: "Master Figma for creating interactive prototypes.",
+                        courses: [
+                            { title: "Figma UI UX Design Essentials", instructor: "Daniel Walter Scott", rating: 4.8, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "User Research",
+                        description: "Conduct user research and usability testing.",
+                        courses: [
+                            { title: "User Experience Research & Design", instructor: "Annemarie Jonkman", rating: 4.6, price: "$13.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 4",
+                        title: "Portfolio Development",
+                        description: "Build a professional UI/UX portfolio.",
+                        courses: [
+                            { title: "UI/UX Portfolio Masterclass", instructor: "Joe Natoli", rating: 4.7, price: "$14.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1-2", active: true },
+                    { label: "Month 3-4", active: false },
+                    { label: "Month 5-6", active: false },
+                    { label: "Month 7-8", active: false }
+                ]
+            },
+            gamedev: {
+                description: `Become a game developer, tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences. Create engaging games with Unity.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "Game Development Basics",
+                        description: "Learn Unity and C# for game development.",
+                        courses: [
+                            { title: "Complete C# Unity Game Developer", instructor: "Ben Tristem", rating: 4.8, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "2D Game Development",
+                        description: "Create 2D games with Unity.",
+                        courses: [
+                            { title: "Unity 2D Game Development", instructor: "Jonathan Weinberger", rating: 4.7, price: "$13.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "3D Game Development",
+                        description: "Build 3D games with advanced Unity features.",
+                        courses: [
+                            { title: "Unity 3D Game Development", instructor: "Rick Davidson", rating: 4.8, price: "$15.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 4",
+                        title: "Game Portfolio",
+                        description: "Develop a portfolio of games to showcase skills.",
+                        courses: [
+                            { title: "Game Development Portfolio", instructor: "Ben Tristem", rating: 4.7, price: "$14.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1-2", active: true },
+                    { label: "Month 3-4", active: false },
+                    { label: "Month 5-6", active: false },
+                    { label: "Month 7-8", active: false }
+                ]
+            },
+            cybersecurity: {
+                description: `Become a cybersecurity expert, tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences. Protect systems from threats.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "Cybersecurity Fundamentals",
+                        description: "Learn networking, security principles, and ethical hacking.",
+                        courses: [
+                            { title: "Complete Cyber Security Course", instructor: "Nathan House", rating: 4.8, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "Penetration Testing",
+                        description: "Master tools like Kali Linux for penetration testing.",
+                        courses: [
+                            { title: "Learn Ethical Hacking From Scratch", instructor: "Zaid Sabih", rating: 4.7, price: "$15.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "Network Security",
+                        description: "Secure networks with firewalls and intrusion detection.",
+                        courses: [
+                            { title: "Network Security Masterclass", instructor: "Jason Dion", rating: 4.6, price: "$14.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 4",
+                        title: "Certifications Prep",
+                        description: "Prepare for certifications like CompTIA Security+.",
+                        courses: [
+                            { title: "CompTIA Security+ Certification Prep", instructor: "Mike Meyers", rating: 4.8, price: "$16.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1-2", active: true },
+                    { label: "Month 3-4", active: false },
+                    { label: "Month 5-6", active: false },
+                    { label: "Month 7-8", active: false }
+                ]
+            },
+            default: {
+                description: `A personalized learning journey for '{{goals}}', tailored for {{level}} learners with {{time}} weekly commitment and {{style}} preferences.`,
+                steps: [
+                    {
+                        number: "Step 1",
+                        title: "Foundational Skills",
+                        description: "Start with the basics to build a strong foundation.",
+                        courses: [
+                            { title: "Beginner's Guide to Your Goal", instructor: "Jane Doe", rating: 4.7, price: "$13.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 2",
+                        title: "Intermediate Concepts",
+                        description: "Advance your skills with complex topics.",
+                        courses: [
+                            { title: "Intermediate Course for Your Goal", instructor: "John Smith", rating: 4.6, price: "$15.99" }
+                        ]
+                    },
+                    {
+                        number: "Step 3",
+                        title: "Project-Based Learning",
+                        description: "Apply knowledge in real-world projects.",
+                        courses: [
+                            { title: "Project-Based Learning for Your Goal", instructor: "Emily Brown", rating: 4.8, price: "$14.99" }
+                        ]
+                    }
+                ],
+                timeline: [
+                    { label: "Month 1", active: true },
+                    { label: "Month 2-3", active: false },
+                    { label: "Month 4-5", active: false }
+                ]
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', () => header.classList.toggle('shadow-lg', window.scrollY > 0));
+
+            const form = document.getElementById('learningPathForm');
+            const formSection = document.getElementById('formSection');
+            const loadingSection = document.getElementById('loadingSection');
+            const resultsSection = document.getElementById('resultsSection');
+            const pathDescription = document.getElementById('pathDescription');
+            const pathSteps = document.getElementById('pathSteps');
+            const timeline = document.getElementById('timeline');
+            const backToFormBtn = document.getElementById('backToForm');
+
+            backToFormBtn.addEventListener('click', () => {
+                resultsSection.classList.add('hidden');
+                formSection.classList.remove('hidden');
+                form.reset();
+            });
+
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                formSection.classList.add('hidden');
+                loadingSection.classList.remove('hidden');
+                const progressFill = document.querySelector('.progress-fill');
+                progressFill.style.width = '100%';
+
+                const goals = document.getElementById('learningGoals').value.toLowerCase();
+                const level = document.getElementById('currentSkillLevel').value;
+                const time = document.getElementById('timeAvailability').value;
+                const style = document.getElementById('learningStyle').value;
+
+                setTimeout(() => {
+                    let pathKey = 'default';
+                    if (goals.includes('java')) pathKey = 'java';
+                    else if (goals.includes('python')) pathKey = 'python';
+                    else if (goals.includes('full stack')) pathKey = 'fullstack';
+                    else if (goals.includes('mern')) pathKey = 'mern';
+                    else if (goals.includes('video editing')) pathKey = 'videoediting';
+                    else if (goals.includes('data science')) pathKey = 'datascience';
+                    else if (goals.includes('ui') || goals.includes('ux')) pathKey = 'uiux';
+                    else if (goals.includes('game')) pathKey = 'gamedev';
+                    else if (goals.includes('cybersecurity') || goals.includes('security')) pathKey = 'cybersecurity';
+
+                    const path = JSON.parse(JSON.stringify(learningPaths[pathKey]));
+                    path.description = path.description
+                        .replace('{{level}}', level)
+                        .replace('{{time}}', time)
+                        .replace('{{style}}', style)
+                        .replace('{{goals}}', goals);
+
+                    displayResults(path);
+                    localStorage.setItem('learningPath', JSON.stringify(path));
+                    loadingSection.classList.add('hidden');
+                    resultsSection.classList.remove('hidden');
+                    progressFill.style.width = '0';
+                }, 1000);
+            });
+
+            function displayResults(path) {
+                pathDescription.textContent = path.description;
+                pathSteps.innerHTML = path.steps.map(step => `
+                    <div class="path-step p-6 bg-gray-50 rounded-lg">
+                        <div class="text-lg font-bold text-purple-600">${step.number}</div>
+                        <h4 class="text-xl font-bold mt-2">${step.title}</h4>
+                        <p class="mt-2 text-gray-600">${step.description}</p>
+                        <div class="flex overflow-x-auto gap-4 mt-4">
+                            ${step.courses.map(course => `
+                                <div class="recommended-course flex-none w-60 border border-gray-200 rounded-lg bg-white">
+                                    <div class="h-32 bg-[url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3')] bg-cover"></div>
+                                    <div class="p-4">
+                                        <h5 class="font-bold text-base line-clamp-2">${course.title}</h5>
+                                        <p class="text-sm text-gray-600">${course.instructor}</p>
+                                        <div class="flex items-center my-2">
+                                            <span class="font-bold text-sm">${course.rating}</span>
+                                            <div class="text-yellow-500 text-xs ml-1">${'<i class="fas fa-star"></i>'.repeat(Math.floor(course.rating))}${course.rating % 1 ? '<i class="fas fa-star-half-alt"></i>' : ''}</div>
+                                        </div>
+                                        <p class="font-bold text-base">${course.price}</p>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `).join('');
+                timeline.innerHTML = path.timeline.map(point => `
+                    <div class="timeline-point flex-1 text-center pt-12 ${point.active ? 'active pulse' : ''}">
+                        <div class="text-sm font-semibold">${point.label}</div>
+                    </div>
+                `).join('');
+            }
+            const searchInput = document.getElementById('searchInput');
+            const courseCards = document.querySelectorAll('.course-card');
+            searchInput.addEventListener('input', () => {
+                const query = searchInput.value.toLowerCase();
+                courseCards.forEach(card => {
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const category = card.dataset.category.toLowerCase();
+                    card.style.display = title.includes(query) || category.includes(query) ? 'block' : 'none';
+                });
+            });
+
+            const prevButton = document.querySelector('.carousel-button.left-0');
+            const nextButton = document.querySelector('.carousel-button.right-0');
+            const carouselTrack = document.querySelector('.carousel-track');
+            let position = 0;
+            const cardWidth = 272;
+            const visibleCards = Math.floor(window.innerWidth / cardWidth) || 4;
+            const totalCards = courseCards.length;
+            const maxPosition = -cardWidth * (totalCards - visibleCards);
+
+            nextButton.addEventListener('click', () => {
+                position -= cardWidth;
+                if (position < maxPosition) position = maxPosition;
+                carouselTrack.style.transform = `translateX(${position}px)`;
+            });
+
+            prevButton.addEventListener('click', () => {
+                position += cardWidth;
+                if (position > 0) position = 0;
+                carouselTrack.style.transform = `translateX(${position}px)`;
+            });
+
+            const tabs = document.querySelectorAll('.category-tab');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    const category = tab.dataset.category;
+                    courseCards.forEach(card => {
+                        card.style.display = card.dataset.category.includes(category) ? 'block' : 'none';
+                    });
+                    position = 0;
+                    carouselTrack.style.transform = `translateX(0px)`;
+                    searchInput.value = '';
+                });
+            });
+
+            window.addEventListener('resize', () => {
+                const newVisibleCards = Math.floor(window.innerWidth / cardWidth) || 4;
+                const newMaxPosition = -cardWidth * (totalCards - newVisibleCards);
+                if (position < newMaxPosition) position = newMaxPosition;
+                if (position > 0) position = 0;
+                carouselTrack.style.transform = `translateX(${position}px)`;
+            });
+        });
+    </script>
+</body>
+</html>
