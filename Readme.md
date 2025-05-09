@@ -1,6 +1,6 @@
 Udemy Homepage with AI-Powered Learning Path Generator
 ======================================================
-
+ 
 This project is a pixel-perfect reproduction of Udemy's homepage, enhanced with an **AI-Powered Personalized Learning Path Generator**. Built for the **Level Up Vibe Coding Hackathon**, it showcases advanced features like dynamic content generation, responsive design, and interactive UI elements---all within a single HTML file.
 
 Features
